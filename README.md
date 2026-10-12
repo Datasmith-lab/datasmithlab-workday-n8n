@@ -40,6 +40,7 @@ Only selected Workday boards are scanned. Limits, filters and source access dete
 - **Real Actor output, logic replay:** on 12 October 2026 the workflow's Prepare delivery logic was replayed against real output of the Workday Jobs Scraper (NVIDIA board, 10 jobs, run Ch3YDJv36qQL67fop). The first pass produced 10 baseline rows. A second pass with the saved rows produced 0 new IDs and 10 unique keys.
 - **Input check:** the full-URL validation accepts `https://nvidia.wd5.myworkdayjobs.com/NVIDIAExternalCareerSite` and rejects `Stripe`, a non-Workday careers URL and an `http://` address.
 - **Import:** the inactive workflow imported into a clean n8n 2.26.4 instance.
-- **Not tested:** a live Google Sheets write and a scheduled run of this exact Workday workflow. It reuses the structure of the ATS starter, which was verified live on 11 October 2026 (Stripe, 10 unique saved keys, no duplicates). Run it manually first and inspect the Jobs tab.
+- **Live Google Sheets run:** on 12 October 2026 the complete workflow ran on a self-hosted n8n 2.26.4 against a real Google Sheet and the live Actor (NVIDIA board, 10 jobs). The first run saved 10 baseline rows (run `ma0cR4cstehD5w4QF`). The second run found no new IDs (`aEmpxJcBk1fjCs9Wb`). A read-back showed 10 unique keys and no duplicates.
+- **Not tested:** a scheduled (timer-triggered) run of this exact Workday workflow. It reuses the structure of the ATS starter, whose schedule was verified on 11 October 2026 (Stripe, 10 unique saved keys, no duplicates). Run it manually first and inspect the Jobs tab.
 
 Other n8n versions and cloud instances require your own setup check. This package has not been accepted into the official n8n template directory.

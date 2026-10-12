@@ -80,7 +80,7 @@
 
     <h2>Limits worth knowing</h2>
     <p><strong>First-seen time is not publication time.</strong> A job is logged when your workflow first sees it, which can be later than the date it was posted. A job missing from a later bounded snapshot is not proof that it closed; the starter keeps old rows and does not detect closures. Workday boards cannot be guessed from a company name, so paste the complete board URL.</p>
-    <p>The Actor charges a small start fee plus a per-job price, and the starter caps each run at $0.10. Check the Store page for current prices. A live Google Sheets write and a scheduled run of this exact Workday workflow have not been tested; the structure follows the <a href="https://datasmith-lab.github.io/datasmithlab-ats-n8n/">career page starter</a>, which was verified live.</p>
+    <p>The Actor charges a small start fee plus a per-job price, and the starter caps each run at $0.10. Check the Store page for current prices. On 12 October 2026 the whole workflow ran against a real Google Sheet: 10 baseline rows on the first run, no new IDs on the second, and a read-back of 10 unique keys with no duplicates. A scheduled (timer-triggered) run of this exact workflow has not been tested; the structure follows the <a href="https://datasmith-lab.github.io/datasmithlab-ats-n8n/">career page starter</a>, whose schedule was verified.</p>
 
     <h2>Try it</h2>
     <p>Connect your own accounts, start with one board and verify the first two runs before scheduling.</p>
