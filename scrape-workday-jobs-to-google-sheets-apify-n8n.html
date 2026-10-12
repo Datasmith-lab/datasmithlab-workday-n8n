@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Scrape Workday Jobs to Google Sheets with Apify &amp; n8n | DataSmithLab</title>
+  <meta name="description" content="Workday career sites hide exact posting dates and salaries. Pull both from selected Workday boards with Apify, then log new jobs in Google Sheets with n8n.">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+  <link rel="canonical" href="https://datasmith-lab.github.io/datasmithlab-workday-n8n/scrape-workday-jobs-to-google-sheets-apify-n8n.html">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Scrape Workday Jobs to Google Sheets with Apify and n8n">
+  <meta property="og:description" content="Get real posting dates and parsed salary ranges from Workday boards and keep a deduplicated job log in Google Sheets.">
+  <meta property="og:url" content="https://datasmith-lab.github.io/datasmithlab-workday-n8n/scrape-workday-jobs-to-google-sheets-apify-n8n.html">
+  <meta name="twitter:card" content="summary">
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"Article",
+    "headline":"Scrape Workday Jobs to Google Sheets with Apify and n8n",
+    "description":"Pull real posting dates and parsed salary ranges from selected Workday career sites and log them in Google Sheets.",
+    "datePublished":"2026-10-12",
+    "dateModified":"2026-10-12",
+    "author":{"@type":"Organization","name":"DataSmithLab"},
+    "publisher":{"@type":"Organization","name":"DataSmithLab"},
+    "mainEntityOfPage":{"@type":"WebPage","@id":"https://datasmith-lab.github.io/datasmithlab-workday-n8n/scrape-workday-jobs-to-google-sheets-apify-n8n.html"}
+  }
+  </script>
+  <style>
+    :root{color-scheme:dark;--bg:#0b1119;--panel:#111c28;--text:#edf4fa;--muted:#b3c2d0;--line:#2b3a49;--accent:#ffd84a;--link:#8edcff}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:18px/1.72 system-ui,-apple-system,Segoe UI,sans-serif}
+    main{width:min(860px,100% - 40px);margin:0 auto;padding:48px 0 80px}a{color:var(--link);text-underline-offset:3px}a:hover{color:#fff}
+    .brand{font-size:13px;font-weight:800;letter-spacing:.14em;color:var(--muted);text-transform:uppercase}.brand b{color:var(--accent)}
+    h1{max-width:760px;font-size:clamp(36px,7vw,62px);line-height:1.07;letter-spacing:-.035em;margin:30px 0 18px}
+    h2{font-size:clamp(24px,4vw,32px);line-height:1.2;letter-spacing:-.02em;margin:46px 0 12px}p,li{color:var(--muted)}strong{color:var(--text)}
+    .dek{font-size:21px;line-height:1.5;color:#d2dee8;max-width:730px}
+    .callout{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--accent);padding:16px 20px;border-radius:10px;margin:28px 0}
+    .table{overflow-x:auto;margin:22px 0}table{border-collapse:collapse;width:100%;font-size:15px;min-width:620px}th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--line)}th{color:var(--text)}
+    .steps{padding-left:24px}.steps li{padding-left:5px;margin:10px 0}.links{display:flex;flex-wrap:wrap;gap:12px;margin:24px 0}.button{display:inline-block;padding:11px 15px;border-radius:8px;background:var(--accent);color:#121820;font-weight:750;text-decoration:none}.button.secondary{background:transparent;border:1px solid var(--line);color:var(--text)}
+    footer{margin-top:54px;border-top:1px solid var(--line);padding-top:20px;font-size:14px;color:var(--muted)}
+    @media(max-width:600px){main{width:min(100% - 28px,860px);padding-top:30px}.dek{font-size:18px}}
+  </style>
+</head>
+<body>
+<main>
+  <p class="brand"><b>DataSmithLab</b> · Apify + n8n + Google Sheets</p>
+  <article>
+    <header>
+      <h1>Scrape Workday Jobs to Google Sheets with Apify and n8n</h1>
+      <p class="dek">Workday career sites show "Posted 30+ Days Ago" and no salary field. Here is how to pull exact posting dates and parsed salary ranges from selected Workday boards, then keep a clean job log in Google Sheets.</p>
+    </header>
+    <p>Large employers such as NVIDIA, Adobe and Intel post on Workday. Their career pages are built for candidates, not for tracking. Dates collapse into labels like "Posted Today" or "Posted 30+ Days Ago", and there is no salary column to export. If you follow several Workday employers, checking each board by hand is slow and easy to get wrong.</p>
+    <div class="callout"><strong>Scope:</strong> this workflow tracks the Workday boards you choose. Source access, filters and row limits decide what each run returns. It is not a complete census of every open job, and a salary appears only when the posting itself publishes one.</div>
+
+    <h2>What you get per job</h2>
+    <p>The <a href="https://apify.com/datasmithlab/workday-jobs-scraper">Workday Jobs Scraper</a> reads a full <code>myworkdayjobs.com</code> board URL and returns structured jobs: title, every location, the actual posting date instead of a relative label, seniority and job function from the title, and, where the description contains a pay range, <code>salaryMin</code>, <code>salaryMax</code>, currency and period.</p>
+    <p>In a real run on NVIDIA's board (10 jobs, 12 October 2026), 8 of 10 postings carried a salary range and 2 did not:</p>
+    <div class="table">
+      <table>
+        <thead><tr><th scope="col">Title</th><th scope="col">Location</th><th scope="col">Posted</th><th scope="col">Salary (USD)</th></tr></thead>
+        <tbody>
+          <tr><td>Principal Engineer, Security Architecture - DGX Cloud</td><td>US, WA, Remote</td><td>2026-10-10</td><td>272,000 – 431,250</td></tr>
+          <tr><td>Senior Software Engineer, Networking DGX Cloud</td><td>US, Remote</td><td>2026-10-10</td><td>200,000 – 322,000</td></tr>
+          <tr><td>Senior Storage Infrastructure Software Engineer</td><td>US, CA, Santa Clara</td><td>2026-10-10</td><td>152,000 – 241,500</td></tr>
+          <tr><td>Senior Software Engineer</td><td>Israel, Raanana</td><td>2026-10-11</td><td>not published</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>The salary comes from text such as US pay-transparency ranges inside the job description. The scraper parses it by rule, so it can occasionally be wrong; check important postings on the employer's page.</p>
+
+    <h2>Log it in Google Sheets with n8n</h2>
+    <p>The starter workflow has no hidden steps. A daily trigger starts one Actor run. Before anything is written, n8n checks the run status, the <code>HEALTH</code> and <code>COMPANIES</code> reports and the dataset count. If a response looks incomplete, the workflow stops and leaves your Sheet untouched.</p>
+    <p>Accepted jobs are upserted by a stable key made from your input and the job ID, so a repeat run updates rows instead of duplicating them. The first run is stored as a baseline; later unseen IDs are logged with a first-seen timestamp. Replaying the workflow logic against the real NVIDIA output above produced 10 baseline rows on the first pass and 0 new IDs on the second.</p>
+    <ol class="steps">
+      <li>Create a <code>Jobs</code> tab and paste the header row from the starter.</li>
+      <li>Import the inactive workflow and add your own Apify and Google credentials.</li>
+      <li>Paste a full Workday board URL, for example the NVIDIA board, and keep the 10-job limit for the first run.</li>
+      <li>Run once, inspect <code>HEALTH</code>, <code>COMPANIES</code> and the Sheet, then run again.</li>
+      <li>Enable the daily schedule only after both manual runs look right.</li>
+    </ol>
+
+    <h2>Limits worth knowing</h2>
+    <p><strong>First-seen time is not publication time.</strong> A job is logged when your workflow first sees it, which can be later than the date it was posted. A job missing from a later bounded snapshot is not proof that it closed; the starter keeps old rows and does not detect closures. Workday boards cannot be guessed from a company name, so paste the complete board URL.</p>
+    <p>The Actor charges a small start fee plus a per-job price, and the starter caps each run at $0.10. Check the Store page for current prices. A live Google Sheets write and a scheduled run of this exact Workday workflow have not been tested; the structure follows the <a href="https://datasmith-lab.github.io/datasmithlab-ats-n8n/">career page starter</a>, which was verified live.</p>
+
+    <h2>Try it</h2>
+    <p>Connect your own accounts, start with one board and verify the first two runs before scheduling.</p>
+    <div class="links">
+      <a class="button" href="https://apify.com/datasmithlab/workday-jobs-scraper">Open the Apify Actor</a>
+      <a class="button secondary" href="https://github.com/Datasmith-lab/datasmithlab-workday-n8n/releases/latest/download/workday-jobs-to-sheets-starter.zip">Download the n8n starter</a>
+      <a class="button secondary" href="https://github.com/Datasmith-lab/datasmithlab-workday-n8n#setup">Read the setup guide</a>
+    </div>
+  </article>
+  <footer>DataSmithLab · Public job listings only · Independent starter; not an official n8n directory listing.</footer>
+</main>
+</body>
+</html>
